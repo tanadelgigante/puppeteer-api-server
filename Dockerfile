@@ -1,6 +1,6 @@
 FROM node:18-slim
 
-# Installa Puppeteer e dipendenze necessarie
+# Install system dependencies for Puppeteer
 RUN apt-get update && apt-get install -y \
     wget \
     ca-certificates \
@@ -8,23 +8,32 @@ RUN apt-get update && apt-get install -y \
     libatk-bridge2.0-0 \
     libgbm-dev \
     libgtk-3-0 \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    libx11-xcb1 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxi6 \
+    libxtst6 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Imposta la directory di lavoro
+# Set working directory
 WORKDIR /app
 
-# Copia i file di configurazione
+# Copy package files
 COPY package*.json ./
 
-# Installa le dipendenze
+# Install dependencies
 RUN npm install
 
-# Copia tutti i file della directory attuale
+# Copy all files
 COPY . .
 
-# Espone la porta 3000 per il server
+# Expose port 3000
 EXPOSE 3000
 
-# Comando per avviare il server
+# Start the server
 CMD ["node", "server.js"]
