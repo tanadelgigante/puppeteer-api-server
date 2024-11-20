@@ -1,0 +1,9 @@
+services:
+  puppeteer:
+    image: tanadelgigante/puppeteer-api-server
+    container_name: puppeteer
+    restart: always
+    ports:
+      - 44444:3000
+    volumes:
+      - /srv/puppeteer-api-server/scripts:/app/scripts
