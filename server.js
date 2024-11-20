@@ -1,32 +1,34 @@
 const express = require('express');
-const { exec } = require('child_process');
-const path = require('path');
+const bodyParser = require('body-parser');
+const puppeteer = require('puppeteer');
 
 const app = express();
-app.use(express.json());
+app.use(bodyParser.json()); // Supporta JSON nel corpo della richiesta
 
-const SCRIPTS_DIR = path.join(__dirname, 'scripts'); // Cartella contenente gli script Puppeteer
+app.post('/run-script', async (req, res) => {
+    try {
+        const { script, url } = req.body;
 
-// API per eseguire script
-app.post('/run-script', (req, res) => {
-    const { script, url } = req.body;
-
-    if (!script || !url) {
-        return res.status(400).send('Mancano i parametri "script" e "url".');
-    }
-
-    const scriptPath = path.join(SCRIPTS_DIR, script);
-    const command = `node ${scriptPath} ${url}`;
-
-    exec(command, (error, stdout, stderr) => {
-        if (error) {
-            console.error('Errore durante l\'esecuzione dello script:', stderr);
-            return res.status(500).send(stderr);
+        if (!script || !url) {
+            return res.status(400).send({ error: 'Script name and URL are required.' });
         }
-        res.send(stdout);
-    });
+
+        // Importa dinamicamente lo script richiesto
+        const scriptFunction = require(`./scripts/${script}`);
+
+        const browser = await puppeteer.launch();
+        const result = await scriptFunction(browser, url);
+        await browser.close();
+
+        res.json({ result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: 'An error occurred.', details: error.message });
+    }
 });
 
-app.listen(3000, () => {
-    console.log('Server API in ascolto sulla porta 3000');
+// Avvia il server
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
