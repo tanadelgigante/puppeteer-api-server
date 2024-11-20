@@ -7,7 +7,7 @@ app.use(bodyParser.json());
 
 app.post('/run-script', async (req, res) => {
     try {
-        console.log('Incoming request body:', req.body);
+        console.log('Incoming request body:', req.body); 
         const { script, url } = req.body;
 
         if (!script || !url) {
