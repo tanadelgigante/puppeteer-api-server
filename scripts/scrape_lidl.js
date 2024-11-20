@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-module.exports = async (browser, url, webhookUrl) => {
+module.exports = async (browser, url) => {
     const page = await browser.newPage();
     console.log('Pagina creata');
     
