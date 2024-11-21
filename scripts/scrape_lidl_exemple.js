@@ -31,7 +31,7 @@ module.exports = async (browser, url) => {
     console.log('Payload costruito:', payload);
 
     // Chiamata al Webhook Agent di Huginn
-	const webhookUrl = 'http://192.168.188.121:4750/users/1/web_requests/16/3fb20a86-9111-4351-a585-0397c89a5c14';
+	const webhookUrl = '<your_webhook_url>';
     try {
         const response = await axios.post(webhookUrl, payload);
         console.log('Webhook chiamato con successo:', response.data);
